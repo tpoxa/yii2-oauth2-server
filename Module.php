@@ -12,6 +12,7 @@ class Module extends \yii\base\Module {
     public $modelClasses = [];
     private $_server;
     private $_models = [];
+    private $_storages = [];
 
     /**
      * @inheritdoc
@@ -19,19 +20,20 @@ class Module extends \yii\base\Module {
     public function init() {
         parent::init();
         $this->modelClasses = array_merge($this->getDefaultModelClasses(), $this->modelClasses);
+        $this->_storages = $this->createStorages();
     }
 
     public function getServer($force = false) {
         if ($this->_server === null || $force === true) {
-            $storages = $this->createStorages();
-            $server = new \OAuth2\Server($storages, $this->options);
 
-            $server->addGrantType(new \OAuth2\GrantType\UserCredentials($storages['user_credentials']));
-            $server->addGrantType(new \OAuth2\GrantType\RefreshToken($storages['refresh_token'], [
+            $server = new \OAuth2\Server($this->_storages, $this->options);
+
+            $server->addGrantType(new \OAuth2\GrantType\UserCredentials($this->_storages['user_credentials']));
+            $server->addGrantType(new \OAuth2\GrantType\RefreshToken($this->_storages['refresh_token'], [
                 'always_issue_new_refresh_token' => true
             ]));
 
-            $server->addGrantType(new \OAuth2\GrantType\AuthorizationCode($storages['authorization_code']));
+            $server->addGrantType(new \OAuth2\GrantType\AuthorizationCode($this->_storages['authorization_code']));
 
             $this->_server = $server;
         }
@@ -39,8 +41,8 @@ class Module extends \yii\base\Module {
     }
 
     public function getStorage($id) {
-        $storages = $this->createStorages();
-        return isset($storages[$id]) ? $storages[$id] : null;
+
+        return isset($this->_storages[$id]) ? $this->_storages[$id] : null;
     }
 
     public function getRequest() {
