@@ -38,6 +38,11 @@ class Module extends \yii\base\Module {
         return $this->_server;
     }
 
+    public function getStorage($id) {
+        $storages = $this->createStorages();
+        return isset($storages[$id]) ? $storages[$id] : null;
+    }
+
     public function getRequest() {
         return \OAuth2\Request::createFromGlobals();
     }
