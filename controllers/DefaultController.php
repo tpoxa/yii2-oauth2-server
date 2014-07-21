@@ -6,26 +6,29 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use filsh\yii2\oauth2server\filters\ErrorToExceptionFilter;
 
-class DefaultController extends \yii\rest\Controller
-{
+class DefaultController extends \yii\rest\Controller {
+
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return ArrayHelper::merge(parent::behaviors(), [
-            'exceptionFilter' => [
-                'class' => ErrorToExceptionFilter::className()
-            ],
+                    'exceptionFilter' => [
+                        'class' => ErrorToExceptionFilter::className()
+                    ],
         ]);
     }
-    
-    public function actionToken()
-    {
+
+    public function actionAuthorize() {
+        
+    }
+
+    public function actionToken() {
         $server = $this->module->getServer();
         $request = $this->module->getRequest();
         $response = $server->handleTokenRequest($request);
-        
+
         return $response->getParameters();
     }
+
 }
