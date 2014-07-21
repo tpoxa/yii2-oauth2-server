@@ -31,7 +31,7 @@ class Module extends \yii\base\Module {
                 'always_issue_new_refresh_token' => true
             ]));
 
-            $server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storages['authorization_code']));
+            $server->addGrantType(new \OAuth2\GrantType\AuthorizationCode($storages['authorization_code']));
 
             $this->_server = $server;
         }
